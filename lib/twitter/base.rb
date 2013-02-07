@@ -3,6 +3,8 @@ require 'twitter/error/identity_map_key_error'
 
 module Twitter
   class Base
+    attr_accessor :response_headers
+
     # Define methods that retrieve the value from an initialized instance variable Hash, using the attribute as a key
     #
     # @param attrs [Array, Set, Symbol]
@@ -55,7 +57,9 @@ module Twitter
     # @param response [Hash]
     # @return [Twitter::Base]
     def self.from_response(response={})
-      fetch_or_new(response[:body])
+      o = fetch_or_new(response[:body])
+      o.response_headers = response[:response_headers]
+      o
     end
 
     # Retrieves an object from the identity map, or stores it in the
@@ -79,6 +83,7 @@ module Twitter
     # @return [Twitter::Base]
     def initialize(attrs={})
       @attrs = attrs
+      @response_headers = {}
     end
 
     # Fetches an attribute of an object using hash notation
